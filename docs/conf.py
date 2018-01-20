@@ -8,7 +8,12 @@ needs_sphinx = '1.6'
 extensions = ['sphinx.ext.intersphinx']
 source_suffix = '.rst'
 master_doc = 'index'
-html_sidebars = {'**': ['about.html', 'navigation.html']}
+html_sidebars = {'**': ['about.html', 'navigation.html', 'searchbox.html']}
+html_theme_options = {
+    'github_user': 'sprockets',
+    'github_repo': 'sample-application',
+    'github_banner': True,
+}
 
 intersphinx_mapping = {
     'python': ('http://docs.python.org/3/', None),

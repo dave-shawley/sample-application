@@ -24,7 +24,7 @@ setuptools.setup(
     name='crudite',
     description='Sprockets/Tornado example application',
     long_description=open('README.rst').read(),
-    url='https://github.com/sprockets/crudite',
+    url='https://github.com/sprockets/sample-application',
     version=crudite.version,
     author='AWeber Communications',
     author_email='api@aweber.com',
