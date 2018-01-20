@@ -35,6 +35,10 @@ disposal:
 **./setup.py flake8**
    Run the `flake8`_ style checker.
 
+**./setup.py httprun**
+   Run the application locally.  This uses the `sprockets http setuptools
+   command`_ to run the application as a tornado process.
+
 If any of the preceding commands fail, then you will have to fix them
 **before** you issue a pull request.  If these fail on a fresh clone of
 master, then please create a github issue immediately so we can fix it.
@@ -53,3 +57,5 @@ then you can push additional commits to your branch to fix whatever is broken.
 .. _flake8: https://flake8.readthedocs.io/
 .. _nose: https://nose.readthedocs.io/
 .. _sphinx: http://www.sphinx-doc.org/
+.. _sprockets http setuptools command: https://sprocketshttp.readthedocs.io/en
+   /latest/index.html#from-setup-py

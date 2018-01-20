@@ -18,4 +18,5 @@ html_theme_options = {
 intersphinx_mapping = {
     'python': ('http://docs.python.org/3/', None),
     'tornado': ('http://tornadoweb.org/en/latest/', None),
+    'sprockets-http': ('https://sprocketshttp.readthedocs.io/en/latest', None),
 }
