@@ -1,3 +1,7 @@
 graft docs
 graft requires
 graft tests
+
+include LICENSE
+
+global-exclude *.pyc
