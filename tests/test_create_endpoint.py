@@ -43,7 +43,7 @@ class CreateEndpointTests(testing.AsyncHTTPTestCase):
                                        'Accept': 'application/json'})
         self.assertEqual(response.code, 200)
         self.assertEqual(response.headers['Content-Type'],
-                         'application/json; charset=UTF-8')
+                         'application/json; charset="utf-8"')
         body = json.loads(response.body.decode('utf-8'))
         self.assertIn('id', body)
         self.assertIn(body['id'], response.effective_url)
@@ -55,7 +55,7 @@ class CreateEndpointTests(testing.AsyncHTTPTestCase):
                                        'Accept': 'application/json'})
         self.assertEqual(response.code, 200)
         self.assertEqual(response.headers['Content-Type'],
-                         'application/json; charset=UTF-8')
+                         'application/json; charset="utf-8"')
         body = json.loads(response.body.decode('utf-8'))
         body.pop('id')
         self.assertEqual(body, self.request)

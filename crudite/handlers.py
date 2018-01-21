@@ -1,10 +1,14 @@
-import json
 import uuid
 
+from sprockets.mixins.mediatype import content
 from tornado import web
+import sprockets.http.mixins
 
 
-class CollectionHandler(web.RequestHandler):
+class CollectionHandler(content.ContentMixin,
+                        sprockets.http.mixins.ErrorLogger,
+                        sprockets.http.mixins.ErrorWriter,
+                        web.RequestHandler):
 
     def post(self):
         """
@@ -21,7 +25,7 @@ class CollectionHandler(web.RequestHandler):
         :status 409: if the user name is already in use
 
         """
-        body = json.loads(self.request.body.decode('utf-8'))
+        body = self.get_request_body()
         for user in self.application.database.values():
             if user['login'] == body['login']:
                 self.send_error(409, reason='Username Exists')
@@ -33,7 +37,8 @@ class CollectionHandler(web.RequestHandler):
         self.redirect(self.reverse_url('entry', user_id), status=303)
 
 
-class EntryHandler(web.RequestHandler):
+class EntryHandler(content.ContentMixin, sprockets.http.mixins.ErrorLogger,
+                   sprockets.http.mixins.ErrorWriter, web.RequestHandler):
 
     def get(self, user_id):
         """
@@ -50,5 +55,4 @@ class EntryHandler(web.RequestHandler):
         """
         user = self.application.database[user_id]
         self.set_status(200)
-        self.set_header('Content-Type', 'application/json; charset=UTF-8')
-        self.write(json.dumps(user).encode('utf-8'))
+        self.send_response(user)

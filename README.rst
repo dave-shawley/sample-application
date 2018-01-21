@@ -17,3 +17,6 @@ Sprockets used
 * `sprockets.handlers.status <https://github.com/sprockets/sprockets.handlers.status>`_
   implements a simple request handler that reports the package's name,
   version, and status.
+* `sprockets.mixins.mediatype <https://github.com/sprockets/sprockets.mixins.media_type>`_
+  implements *proactive content negotiation* as described in section 3.1 of
+  `RFC-7231 <https://tools.ietf.org/html/rfc7231#section-3.4.1>`_.

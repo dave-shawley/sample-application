@@ -1,3 +1,4 @@
+from sprockets.mixins.mediatype import content, transcoders
 from tornado import web
 import sprockets.http.app
 import sprockets.handlers.status
@@ -16,4 +17,8 @@ class Application(sprockets.http.app.Application):
                     name='entry'),
         ], *args, **kwargs)
         sprockets.handlers.status.set_application(__package__)
+        content.add_transcoder(self, transcoders.JSONTranscoder())
+        content.set_default_content_type(self, 'application/json',
+                                         encoding='utf-8')
+
         self.database = {}
