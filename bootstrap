@@ -1,0 +1,30 @@
+#!/bin/sh -e
+#
+# vim: set ts=2 sw=2 sts=2 et:
+
+if test ! -e /var/run/docker.sock
+then
+  echo "Please install docker from docker.io."
+  exit 69  # EX_UNAVAILABLE
+fi
+
+get_exposed_port() {  # SERVICE PORT
+  port=$(docker-compose port $1 $2 | cut -d: -f2)
+  if test -z "$port"
+  then
+    echo "docker-compose port $1 $2 failed."
+    exit 70  # EX_SOFTWARE
+  fi
+  echo "$port"
+}
+
+if test "$1" != 'shellinit'
+then
+  docker-compose down --remove-orphans --volumes
+  docker-compose up -d
+fi
+
+test -d build || mkdir build
+cat >build/test-environment<<EOF
+PGSQL_USERS=postgresql://postgres@127.0.0.1:$(get_exposed_port postgres 5432)/postgres
+EOF

@@ -21,6 +21,19 @@ using the pip-formatted requirements files in the *requires* directory::
 
    $ env/bin/pip install -r requires/development.txt
 
+The development environment requires some external services to run.  These are
+run inside of docker containers via `docker-compose`_.  The *bootstrap*
+script will start the containers necessary to run the application as well as
+the tests::
+
+   $ ./bootstrap
+
+The services will be running as chil processes under the docker daemon.  They
+are configured to bind to ephemeral ports so the *bootstrap* script
+interrogates the docker daemon and writes the emphemeral port numbers to the
+*build/test-environment* file.  Don't worry, the tests take care of reading
+this in so you don't have to do anything special.
+
 Once you have the enviroment installed, you are ready to start developing.
 *setup.py* acts as your entry point with the following commands at your
 disposal:
