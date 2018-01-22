@@ -23,8 +23,14 @@ class CreateEndpointTests(testing.AsyncHTTPTestCase):
                         'email': self.fakes.safe_email(),
                         'password': self.fakes.password()}
 
+    def tearDown(self):
+        super(CreateEndpointTests, self).tearDown()
+        self.application.on_shutdown(self.application)
+
     def get_app(self):
         self.application = crudite.app.Application()
+        self.io_loop.add_callback(self.application.before_run,
+                                  self, self.io_loop)
         return self.application
 
     def test_that_create_endpoint_redirects_to_entry_handler(self):

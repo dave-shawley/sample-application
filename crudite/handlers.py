@@ -1,7 +1,6 @@
-import uuid
-
 from sprockets.mixins.mediatype import content
-from tornado import web
+from tornado import gen, web
+import psycopg2
 import sprockets.http.mixins
 
 
@@ -10,6 +9,7 @@ class CollectionHandler(content.ContentMixin,
                         sprockets.http.mixins.ErrorWriter,
                         web.RequestHandler):
 
+    @gen.coroutine
     def post(self):
         """
         Add a new user record.
@@ -26,20 +26,26 @@ class CollectionHandler(content.ContentMixin,
 
         """
         body = self.get_request_body()
-        for user in self.application.database.values():
-            if user['login'] == body['login']:
-                self.send_error(409, reason='Username Exists')
-                return
-
-        user_id = str(uuid.uuid4())
-        body['id'] = user_id
-        self.application.database[user_id] = body
+        try:
+            results = yield self.application.database.query(
+                'INSERT INTO users(login, first_name, last_name,'
+                '                  email, password)'
+                '         VALUES (%(login)s, %(first_name)s, %(last_name)s,'
+                '                 %(email)s, %(password)s)'
+                '       RETURNING id',
+                body)
+        except psycopg2.IntegrityError:
+            self.send_error(409, reason='Username Exists')
+            return
+        user_id = results.as_dict()['id']
+        results.free()
         self.redirect(self.reverse_url('entry', user_id), status=303)
 
 
 class EntryHandler(content.ContentMixin, sprockets.http.mixins.ErrorLogger,
                    sprockets.http.mixins.ErrorWriter, web.RequestHandler):
 
+    @gen.coroutine
     def get(self, user_id):
         """
         Fetch a user record by assigned identifier.
@@ -53,6 +59,12 @@ class EntryHandler(content.ContentMixin, sprockets.http.mixins.ErrorLogger,
         :status 404: the requested user does not exist
 
         """
-        user = self.application.database[user_id]
+        results = yield self.application.database.query(
+            'SELECT id, login, first_name, last_name, email, password'
+            '  FROM users'
+            ' WHERE id = %(user_id)s',
+            {'user_id': user_id})
+        user_info = results.as_dict()
+        results.free()
         self.set_status(200)
-        self.send_response(user)
+        self.send_response(user_info)

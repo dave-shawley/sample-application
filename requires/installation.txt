@@ -1,3 +1,4 @@
+queries==1.10.4
 sprockets.handlers.status==0.1.2
 sprockets.http==1.4.1
 sprockets.mixins.mediatype==2.1.0

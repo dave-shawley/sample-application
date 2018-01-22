@@ -1,5 +1,9 @@
+import os
+
 from sprockets.mixins.mediatype import content, transcoders
 from tornado import web
+import psycopg2
+import queries
 import sprockets.http.app
 import sprockets.handlers.status
 
@@ -21,4 +25,19 @@ class Application(sprockets.http.app.Application):
         content.set_default_content_type(self, 'application/json',
                                          encoding='utf-8')
 
-        self.database = {}
+        self.settings['database_url'] = os.environ.get(
+            'PGSQL_USERS', 'postgresql://localhost/postgres')
+        self.database = None
+        self.before_run_callbacks.append(self.before_run)
+        self.on_shutdown_callbacks.append(self.on_shutdown)
+
+    def before_run(self, _, _io_loop):
+        self.database = queries.TornadoSession(self.settings['database_url'])
+
+    def on_shutdown(self, _):
+        if self.database:
+            try:
+                self.database.close()
+            except psycopg2.InterfaceError:
+                pass  # connection not open
+            self.database = None

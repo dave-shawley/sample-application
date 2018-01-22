@@ -4,4 +4,6 @@ services:
     image: postgres:9.6-alpine
     ports:
       - 5432
+    volumes:
+      - ./ci/postgres/:/docker-entrypoint-initdb.d/
 networks: {}
